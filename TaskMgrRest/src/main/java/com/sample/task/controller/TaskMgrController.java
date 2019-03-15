@@ -2,6 +2,7 @@ package com.sample.task.controller;
 import com.sample.task.domain.ParentTask;
 import com.sample.task.domain.SearchTask;
 import com.sample.task.domain.Task;
+import com.sample.task.exception.NotFoundException;
 import com.sample.task.service.TaskMgrService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,9 +33,8 @@ public class TaskMgrController {
     @CrossOrigin(origins = "http://localhost:4200")
     @RequestMapping(value = "/addTask", method = RequestMethod.POST,headers = "Accept=application/json",produces= MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Boolean> addTask(@RequestBody Task task) {
+    public ResponseEntity<Boolean> addTask(@RequestBody Task task) throws NotFoundException {
 
-        System.out.println("task mgr add cntrl");
         taskMgrService.addTask(task);
         return new ResponseEntity<Boolean>(true,HttpStatus.OK);
     }

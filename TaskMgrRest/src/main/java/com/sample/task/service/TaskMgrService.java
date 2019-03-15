@@ -4,6 +4,7 @@ import com.sample.task.dao.TaskMgrDao;
 import com.sample.task.domain.ParentTask;
 import com.sample.task.domain.SearchTask;
 import com.sample.task.domain.Task;
+import com.sample.task.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,16 +18,19 @@ public class TaskMgrService {
 
 
     @Transactional
-    public void addTask(Task task) {
-        System.out.println("task mgr add service");
+    public void addTask(Task task) throws  NotFoundException {
+
         if (task.getParentTask() != null){
             Task parentTaskref=taskMgrDao.viewTask(task.getParentTask());
-            ParentTask parentTask =new ParentTask();
-            System.out.println("add task");
-            System.out.println(parentTaskref.getId());
-            parentTask.setTask(task.getParentTask());
-            parentTask.setId(parentTaskref.getId());
-            task.setParentTaskEntity(parentTask);
+            if (parentTaskref != null){
+                ParentTask parentTask =new ParentTask();
+                parentTask.setTask(task.getParentTask());
+                parentTask.setId(parentTaskref.getId());
+                task.setParentTaskEntity(parentTask);
+            }
+            else {
+                throw new NotFoundException("Parent Task Not Found");
+            }
         }
         taskMgrDao.addTask(task);
     }
@@ -37,7 +41,7 @@ public class TaskMgrService {
         if (viewTask != null){
             task.setId(viewTask.getId());
             if (task.getParentTask() != null){
-                System.out.println("update task");
+
                 Task parentTaskref=taskMgrDao.viewTask(task.getParentTask());
                 ParentTask parentTask =new ParentTask();
                 parentTask.setTask(task.getParentTask());

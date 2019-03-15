@@ -22,7 +22,7 @@ public class TaskMgrDao {
     private EntityManager em;
     @Transactional
     public void addTask(Task task){
-        System.out.println("task mgr add dao");
+
         em.merge(task);
     }
 
@@ -72,7 +72,7 @@ public class TaskMgrDao {
             queryString=appendQuery(queryString,"endDate<=:endDate");
             queryMap.put("endDate",searchTask.getEndDate());
         }
-        System.out.println(queryString);
+
         Query query= em.createQuery(queryString);
         for (Map.Entry<String,Object> entryParam: queryMap.entrySet()){
             query.setParameter(entryParam.getKey(),entryParam.getValue());
